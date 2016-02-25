@@ -1567,6 +1567,42 @@ static BOOL _DTCoreTextLayoutFramesShouldDrawDebugFrames = NO;
 	return array;
 }
 
+- (NSInteger)glyphIndexForStringIndex:(NSInteger)index
+{
+	NSInteger offset = 0;
+	for (DTCoreTextLayoutLine *oneLine in self.lines)
+	{
+		NSRange range = [oneLine stringRange];
+		if (NSLocationInRange(index, range))
+		{
+			return offset + [oneLine glyphIndexForStringIndex:index];
+		}
+		else {
+			offset += [oneLine numberOfGlyphs];
+		}
+	}
+	
+	return NSNotFound;
+}
+
+- (NSRange)stringRangeForGlyphIndex:(NSInteger)index
+{
+	for (DTCoreTextLayoutLine *oneLine in self.lines)
+	{
+		NSInteger count = [oneLine numberOfGlyphs];
+		if (index >= count)
+		{
+			index -= count;
+		}
+		else
+		{
+			return [oneLine stringRangeForGlyphIndex:index];
+		}
+	}
+	
+	return NSMakeRange(NSNotFound, 0);
+}
+
 - (NSInteger)lineIndexForGlyphIndex:(NSInteger)index
 {
 	NSInteger retIndex = 0;
