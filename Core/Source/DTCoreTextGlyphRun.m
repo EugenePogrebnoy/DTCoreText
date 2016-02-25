@@ -336,7 +336,14 @@
 {
 	if (!_stringIndices) 
 	{
-		const CFIndex *indices = CTRunGetStringIndicesPtr(_run);
+		CFIndex *indices = (CFIndex*)CTRunGetStringIndicesPtr(_run);
+		BOOL mustReleaseIndices = NO;
+		if (indices == NULL) {
+			mustReleaseIndices = YES;
+			indices = malloc(sizeof(CFIndex) * self.numberOfGlyphs);
+			CTRunGetStringIndices(_run, CFRangeMake(0, 0), indices);
+		}
+			
 		NSInteger count = self.numberOfGlyphs;
 		NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
 		NSInteger i;
@@ -344,6 +351,11 @@
 		{
 			[array addObject:[NSNumber numberWithInteger:indices[i]]];
 		}
+		
+		if (mustReleaseIndices) {
+			free(indices);
+		}
+		
 		_stringIndices = array;
 	}
 	return _stringIndices;
