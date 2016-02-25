@@ -160,6 +160,42 @@
 	return array;
 }
 
+- (NSInteger)glyphIndexForStringIndex:(NSInteger)index
+{
+	NSInteger offset = 0;
+	for (DTCoreTextGlyphRun *oneRun in self.glyphRuns)
+	{
+		NSRange range = [oneRun stringRange];
+		if (NSLocationInRange(index, range))
+		{
+			return offset + [oneRun glyphIndexForStringIndex:index];
+		}
+		else {
+			offset += [oneRun numberOfGlyphs];
+		}
+	}
+	
+	return NSNotFound;
+}
+
+- (NSRange)stringRangeForGlyphIndex:(NSInteger)index
+{
+	for (DTCoreTextGlyphRun *oneRun in self.glyphRuns)
+	{
+		NSInteger count = [oneRun numberOfGlyphs];
+		if (index >= count)
+		{
+			index -= count;
+		}
+		else
+		{
+			return [oneRun stringRangeForGlyphIndex:index];
+		}
+	}
+	
+	return NSMakeRange(NSNotFound, 0);
+}
+
 - (CGRect)frameOfGlyphAtIndex:(NSInteger)index
 {
 	for (DTCoreTextGlyphRun *oneRun in self.glyphRuns)

@@ -361,6 +361,31 @@
 	return _stringIndices;
 }
 
+- (NSInteger)glyphIndexForStringIndex:(NSInteger)index
+{
+	NSArray *stringIndices = [self stringIndices];
+	
+	NSInteger ret = 0;
+	NSInteger numberOfIndices = stringIndices.count;
+	for (; ret < numberOfIndices && index < ((NSNumber*)stringIndices[ret]).integerValue; ret++);
+	
+	return ret;
+}
+
+- (NSRange)stringRangeForGlyphIndex:(NSInteger)index
+{
+	NSArray *indices = [self stringIndices];
+	NSInteger startIndex = ((NSNumber*)indices[index]).integerValue;
+	NSInteger endIndex;
+	if (index < self.numberOfGlyphs - 1) {
+		endIndex = ((NSNumber*)indices[index]).integerValue;
+	}
+	else {
+		endIndex = NSMaxRange([self stringRange]);
+	}
+	return NSMakeRange(startIndex, startIndex - endIndex);
+}
+
 // bounds of an image encompassing the entire run
 - (CGRect)imageBoundsInContext:(CGContextRef)context
 {

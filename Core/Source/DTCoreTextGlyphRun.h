@@ -93,6 +93,20 @@
 - (NSArray *)stringIndices;
 
 /**
+ Converts an index of the string to an index of the corresponding glyph.
+ @param index The index of the character in the string
+ @returns The index of a glyph that represents a character with the given index
+ */
+- (NSInteger)glyphIndexForStringIndex:(NSInteger)index;
+
+/**
+ Converts an index of a glyph to the corresponging string range
+ @param index The index of the glyph
+ @returns The range in the string
+ */
+- (NSRange)stringRangeForGlyphIndex:(NSInteger)index;
+
+/**
  The frame rectangle of the glyph run, relative to the layout frame coordinate system
  */
 @property (nonatomic, readonly) CGRect frame;
